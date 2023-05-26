@@ -3,10 +3,11 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { api } from "~/utils/api";
+import { RouterOutputs } from "~/utils/api";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
-
+  console.log(user);
   if (!user) return null;
 
   return (
@@ -22,6 +23,15 @@ const CreatePostWizard = () => {
       />
     </div>
   );
+};
+
+type PostWithUser = RouterOutputs["posts"]["getAll"][number];
+
+const PostView = (props: PostWithUser) => {
+  const { post, author } = props;
+  <div key={post.id} className="border-b border-slate-400 p-8">
+    {post.content}
+  </div>;
 };
 
 const Home: NextPage = () => {
@@ -50,10 +60,8 @@ const Home: NextPage = () => {
           </div>
           <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
           <div className="flex flex-col">
-            {[...data, ...data]?.map((post) => (
-              <div key={post.id} className="border-b border-slate-400 p-8">
-                {post.content}
-              </div>
+            {[...data, ...data]?.map((fullPost) => (
+              <PostView {...fullPost} key={fullPost.post.id} />
             ))}
           </div>
         </div>
