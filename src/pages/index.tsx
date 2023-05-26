@@ -2,12 +2,11 @@ import { SignIn, SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { api } from "~/utils/api";
+import { RouterOutputs, api } from "~/utils/api";
 
 const CreatePostWizard = () => {
   const { user } = useUser();
   if (!user) return null;
-
   return (
     <div className="flex w-full gap-3">
       <img src={user.profileImageUrl} className="h-14 w-14 rounded-full" />
@@ -15,6 +14,18 @@ const CreatePostWizard = () => {
         placeholder="Please enter emoji!"
         className="grow bg-transparent outline-none"
       />
+    </div>
+  );
+};
+
+type PostWithUser = RouterOutputs["posts"]["getAll"][number];
+const PostView = (props: PostWithUser) => {
+  const { post, author } = props;
+
+  return (
+    <div key={post.id} className="border-b border-slate-400 p-8">
+      <img src={author.profileImageUrl} />
+      {post.content}
     </div>
   );
 };
@@ -46,10 +57,8 @@ const Home: NextPage = () => {
           </div>
           <SignIn path="/sign-in" routing="path" signUpUrl="/sign-up" />
           <div className="flex flex-col">
-            {[...data!, ...data!]?.map((post) => (
-              <div key={post.id} className="border-b border-slate-400 p-8">
-                {post.content}
-              </div>
+            {[...data!, ...data!]?.map((fullPost) => (
+              <PostView {...fullPost} key={fullPost.post.id} />
             ))}
           </div>
         </div>
