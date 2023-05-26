@@ -23,8 +23,8 @@ const PostView = (props: PostWithUser) => {
   const { post, author } = props;
 
   return (
-    <div key={post.id} className="border-b border-slate-400 p-8">
-      <img src={author.profileImageUrl} />
+    <div key={post.id} className="flex border-b border-slate-400 p-8 ">
+      <img src={author.profileImageUrl} className="h-14 w-14 rounded-full" />
       {post.content}
     </div>
   );
